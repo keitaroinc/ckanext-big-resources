@@ -1,0 +1,14 @@
+# big_resources-js:
+#   filter: rjsmin
+#   output: ckanext-big_resources/%(version)s-big_resources.js
+#   contents:
+#     - js/big_resources.js
+#   extra:
+#     preload:
+#       - base/main
+
+# big_resources-css:
+#   filter: cssrewrite
+#   output: ckanext-big_resources/%(version)s-big_resources.css
+#   contents:
+#     - css/big_resources.css
