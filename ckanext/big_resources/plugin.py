@@ -1,15 +1,23 @@
 import ckan.plugins as plugins
 import ckan.plugins.toolkit as toolkit
-import ckanext.big_resources.views as views
 from ckan.lib.uploader import ResourceUpload as DefaultResourceUpload
-from ckan.lib.uploader import _copy_file
+import ckanext.big_resources.views as views
 import os
+import requests
+from requests_toolbelt.multipart import encoder
+from ckan.lib.uploader import _copy_file
 import ckan.logic as logic
+from ckan.common import g, request
+from requests_toolbelt.multipart.encoder import (
+    MultipartEncoder,
+    MultipartEncoderMonitor,
+)
 
 
 class BigResourcesPlugin(plugins.SingletonPlugin):
     plugins.implements(plugins.IConfigurer)
     plugins.implements(plugins.IUploader, inherit=True)
+    plugins.implements(plugins.IBlueprint)
 
     def get_resource_uploader(self, data_dict):
         return ResourceUpload(data_dict)
@@ -22,6 +30,11 @@ class BigResourcesPlugin(plugins.SingletonPlugin):
         toolkit.add_resource('fanstatic',
             'big_resources')
         
+    # IBlueprint
+        
+    def get_blueprint(self):
+        return views.get_blueprints()
+
 
 class ResourceUpload(DefaultResourceUpload):
 
@@ -47,7 +60,6 @@ class ResourceUpload(DefaultResourceUpload):
         # we write it to the filepath (and overwrite it if it already
         # exists). This way the uploaded file will always be stored
         # in the same location
-        breakpoint()
         if self.filename:
             try:
                 os.makedirs(directory)
@@ -66,5 +78,16 @@ class ResourceUpload(DefaultResourceUpload):
                     self.upload_file.close()
             os.rename(tmp_filepath, filepath)
             return
+
+        # The resource form only sets self.clear (via the input clear_upload)
+        # to True when an uploaded file is not replaced by another uploaded
+        # file, only if it is replaced by a link to file.
+        # If the uploaded file is replaced by a link, we should remove the
+        # previously uploaded file to clean up the file system.
+        if self.clear:
+            try:
+                os.remove(filepath)
+            except OSError as e:
+                pass
         
     
