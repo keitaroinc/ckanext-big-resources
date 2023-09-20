@@ -1,17 +1,20 @@
-from flask import Blueprint
+from flask import Blueprint, Response, stream_with_context
 import ckan.model as model
-import flask
 import ckan.lib.helpers as h
 import ckan.lib.uploader as uploader
 import ckan.lib.base as base
 import ckan.logic as logic
 from ckan.common import _, g
+import requests
+import shutil
+
 
 
 big_resources = Blueprint("big_resources", __name__)
 get_action = logic.get_action
 NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
+
 
 @big_resources.route("/dataset/<id>/resource/<resource_id>/download")
 @big_resources.route("/dataset/<id>/resource/<resource_id>/download/<filename>")
@@ -37,17 +40,34 @@ def download(id, resource_id, filename=None, package_type='dataset'):
 
     if rsc.get(u'url_type') == u'upload':
         upload = uploader.get_resource_uploader(rsc)
+        url = rsc[u'url']
+        ########################################
+        # rewrite download function from resource.py
+        CHUNK_SIZE = 8192
+
+        def read_file_chunks(path):
+            with open(path, 'rb') as fd:
+                while 1:
+                    buf = fd.read(CHUNK_SIZE)
+                    if buf:
+                        yield buf
+                    else:
+                        break
+        
         filepath = upload.get_path(rsc[u'id'])
-        # breakpoint()
-        resp = flask.send_file(filepath)
-        if rsc.get(u'mimetype'):
-            resp.headers[u'Content-Type'] = rsc[u'mimetype']
-        return resp
+
+        ##########################################
+        # if rsc.get(u'mimetype'):
+        #     resp.headers[u'Content-Type'] = rsc[u'mimetype']
+        return Response(
+            stream_with_context(read_file_chunks(filepath)),
+            headers={
+                'Content-Disposition': f'attachment; filename={filename}'
+            })
 
     elif u'url' not in rsc:
         return base.abort(404, _(u'No download is available'))
     return h.redirect_to(rsc[u'url'])
-
 
 
 
