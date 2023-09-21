@@ -3,15 +3,8 @@ import ckan.plugins.toolkit as toolkit
 from ckan.lib.uploader import ResourceUpload as DefaultResourceUpload
 import ckanext.big_resources.views as views
 import os
-import requests
-from requests_toolbelt.multipart import encoder
-from ckan.lib.uploader import _copy_file
+
 import ckan.logic as logic
-from ckan.common import g, request
-from requests_toolbelt.multipart.encoder import (
-    MultipartEncoder,
-    MultipartEncoderMonitor,
-)
 
 
 class BigResourcesPlugin(plugins.SingletonPlugin):
@@ -34,6 +27,21 @@ class BigResourcesPlugin(plugins.SingletonPlugin):
         
     def get_blueprint(self):
         return views.get_blueprints()
+
+
+def _copy_file_overwriten(input_file, output_file, max_size):
+    
+    ###To do - Implement validator
+    if len(input_file.read()) > max_size:
+        raise logic.ValidationError({'upload': ['File upload too large']})
+    input_file.seek(0)
+    while True:
+        # Chunk Size in bytes
+        data = input_file.read(10000000)
+
+        if not data:
+            break
+        output_file.write(data)
 
 
 class ResourceUpload(DefaultResourceUpload):
@@ -66,11 +74,12 @@ class ResourceUpload(DefaultResourceUpload):
             except OSError as e:
                 # errno 17 is file already exists
                 if e.errno != 17:
-                    raise
+                    raise      
+
             tmp_filepath = filepath + '~'
             with open(tmp_filepath, 'wb+') as output_file:
                 try:
-                    _copy_file(self.upload_file, output_file, max_size)
+                    _copy_file_overwriten(self.upload_file, output_file, max_size)
                 except logic.ValidationError:
                     os.remove(tmp_filepath)
                     raise
@@ -89,5 +98,3 @@ class ResourceUpload(DefaultResourceUpload):
                 os.remove(filepath)
             except OSError as e:
                 pass
-        
-    

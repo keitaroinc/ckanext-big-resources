@@ -53,7 +53,6 @@ def download(id, resource_id, filename=None, package_type='dataset'):
         
         filepath = upload.get_path(rsc[u'id'])
 
-        
         return Response(
             stream_with_context(read_file_chunks(filepath)),
             headers={
@@ -64,7 +63,6 @@ def download(id, resource_id, filename=None, package_type='dataset'):
     elif u'url' not in rsc:
         return base.abort(404, _(u'No download is available'))
     return h.redirect_to(rsc[u'url'])
-
 
 
 def get_blueprints():
