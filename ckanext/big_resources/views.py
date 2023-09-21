@@ -5,9 +5,6 @@ import ckan.lib.uploader as uploader
 import ckan.lib.base as base
 import ckan.logic as logic
 from ckan.common import _, g
-import requests
-import shutil
-
 
 
 big_resources = Blueprint("big_resources", __name__)
@@ -40,10 +37,10 @@ def download(id, resource_id, filename=None, package_type='dataset'):
 
     if rsc.get(u'url_type') == u'upload':
         upload = uploader.get_resource_uploader(rsc)
-        url = rsc[u'url']
+        
         ########################################
         # rewrite download function from resource.py
-        CHUNK_SIZE = 8192
+        CHUNK_SIZE = 2048
 
         def read_file_chunks(path):
             with open(path, 'rb') as fd:
@@ -56,15 +53,14 @@ def download(id, resource_id, filename=None, package_type='dataset'):
         
         filepath = upload.get_path(rsc[u'id'])
 
-        ##########################################
-        # if rsc.get(u'mimetype'):
-        #     resp.headers[u'Content-Type'] = rsc[u'mimetype']
+        
         return Response(
             stream_with_context(read_file_chunks(filepath)),
             headers={
-                'Content-Disposition': f'attachment; filename={filename}'
+                'Content-Disposition': f'attachment; filename={filename}',
+                'Content-Type': rsc[u'mimetype']
             })
-
+        ##########################################
     elif u'url' not in rsc:
         return base.abort(404, _(u'No download is available'))
     return h.redirect_to(rsc[u'url'])
