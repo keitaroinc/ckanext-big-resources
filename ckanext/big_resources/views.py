@@ -5,12 +5,14 @@ import ckan.lib.uploader as uploader
 import ckan.lib.base as base
 import ckan.logic as logic
 from ckan.common import _, g
-
+from ckan.plugins import toolkit as tk
 
 big_resources = Blueprint("big_resources", __name__)
 get_action = logic.get_action
 NotFound = logic.NotFound
 NotAuthorized = logic.NotAuthorized
+
+CHUNK_SIZE = int(tk.config.get('ckanext.big_resources.chunk_download', 2048))
 
 
 @big_resources.route("/dataset/<id>/resource/<resource_id>/download")
@@ -40,8 +42,7 @@ def download(id, resource_id, filename=None, package_type='dataset'):
         
         ########################################
         # rewrite download function from resource.py
-        CHUNK_SIZE = 2048
-
+        
         def read_file_chunks(path):
             with open(path, 'rb') as fd:
                 while 1:

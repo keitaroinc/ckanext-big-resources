@@ -32,8 +32,8 @@ class BigResourcesPlugin(plugins.SingletonPlugin):
 def _copy_file_overwriten(input_file, output_file, max_size):
     
     ###To do - Implement validator
-    if len(input_file.read()) > max_size:
-        raise logic.ValidationError({'upload': ['File upload too large']})
+    #if len(input_file.read()) > max_size:
+    #    raise logic.ValidationError({'upload': ['File upload too large']})
     input_file.seek(0)
     while True:
         # Chunk Size in bytes
