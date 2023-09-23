@@ -1,3 +1,4 @@
+import flask
 from flask import Blueprint, Response, stream_with_context
 import ckan.model as model
 import ckan.lib.helpers as h
@@ -42,28 +43,37 @@ def download(id, resource_id, filename=None, package_type='dataset'):
         
         ########################################
         # rewrite download function from resource.py
-        
-        def read_file_chunks(path):
-            with open(path, 'rb') as fd:
-                while 1:
-                    buf = fd.read(CHUNK_SIZE)
-                    if buf:
-                        yield buf
-                    else:
-                        break
+        def streaming_response(
+                data, mimetype=u'application/octet-stream', with_context=False):
+            iter_data = iter(data)
+
+            if with_context:
+                iter_data = flask.stream_with_context(iter_data)
+            resp = flask.Response(iter_data, mimetype=mimetype)
+
+            return resp
+
+        def stream_file(f_path):
+            u'''File stream. Just do not close it until response finished'''
+
+            def gen():
+                with open(f_path, 'rb') as fd:
+                    while 1:
+                        buf = fd.read(CHUNK_SIZE)
+                        if buf:
+                            yield buf
+                        else:
+                            break
+
+            return streaming_response(gen())
         
         filepath = upload.get_path(rsc[u'id'])
 
-        return Response(
-            stream_with_context(read_file_chunks(filepath)),
-            headers={
-                'Content-Disposition': f'attachment; filename={filename}',
-                'Content-Type': rsc[u'mimetype']
-            })
+        
         ##########################################
     elif u'url' not in rsc:
         return base.abort(404, _(u'No download is available'))
-    return h.redirect_to(rsc[u'url'])
+    return stream_file(filepath)
 
 
 def get_blueprints():
