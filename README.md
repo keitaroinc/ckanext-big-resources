@@ -1,16 +1,11 @@
-[![Tests](https://github.com/blagojabozinovski/ckanext-big-resources/workflows/Tests/badge.svg?branch=main)](https://github.com/blagojabozinovski/ckanext-big-resources/actions)
-
 # ckanext-big-resources
 
-**TODO:** Put a description of your extension here:  What does it do? What features does it have? Consider including some screenshots or embedding a video!
+Ckan extension that overwrites the upload and download of the resources. 
+the extension breaks the resources into chunks and streams the response. This extension is usefull if We want to configure the chunk size of upload and download in order to use of the server resources in more efficient way.
 
 
 ## Requirements
 
-**TODO:** For example, you might want to mention here which versions of CKAN this
-extension works with.
-
-If your extension works across different versions you can add the following table:
 
 Compatibility with core CKAN versions:
 
@@ -19,14 +14,7 @@ Compatibility with core CKAN versions:
 | 2.6 and earlier | not tested    |
 | 2.7             | not tested    |
 | 2.8             | not tested    |
-| 2.9             | not tested    |
-
-Suggested values:
-
-* "yes"
-* "not tested" - I can't think of a reason why it wouldn't work
-* "not yet" - there is an intention to get it working
-* "no"
+| 2.9             | Yes           |
 
 
 ## Installation
@@ -61,11 +49,14 @@ To install ckanext-big-resources:
 
 None at present
 
-**TODO:** Document any optional config settings here. For example:
+**TODO:** The chunk size for upload and download can be set up in production.ini as shown below
 
-	# The minimum number of hours to wait before re-checking a resource
-	# (optional, default: 24).
-	ckanext.big_resources.some_setting = some_default_value
+
+	ckanext.big_resources.chunk_upload = number_in_bytes
+    ckanext.big_resources.chunk_upload = number_in_bytes
+
+The default value is 2048
+
 
 
 ## Developer installation
