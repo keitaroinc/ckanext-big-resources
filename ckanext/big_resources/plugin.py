@@ -33,10 +33,9 @@ def _copy_file_overwriten(input_file, output_file, max_size):
     
     CHUNK_SIZE = int(toolkit.config.get('ckanext.big_resources.chunk_upload', 2048))
     
-    ###To do - Implement validator
-    #if len(input_file.read()) > max_size:
-    #    raise logic.ValidationError({'upload': ['File upload too large']})
-    
+    max_size_in_mb = max_size*1000000
+    if len(input_file.read()) > max_size_in_mb:
+        raise logic.ValidationError({'upload': ['File upload too large']})
     input_file.seek(0)
     while True:
         # Chunk Size in bytes
