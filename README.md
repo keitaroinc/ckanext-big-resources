@@ -1,7 +1,7 @@
 # ckanext-big-resources
 
-Ckan extension that overwrites the upload and download of the resources. 
-the extension breaks the resources into chunks and streams the response. This extension is usefull if We want to configure the chunk size of upload and download in order to use of the server resources in more efficient way.
+CKAN extension that overwrites the upload and download of the resources. 
+The extension breaks the resources into chunks and streams the response. This extension is usefull if We want to configure the chunk size of upload and download in order to use of the server resources in more efficient way.
 
 
 ## Requirements
@@ -18,10 +18,6 @@ Compatibility with core CKAN versions:
 
 
 ## Installation
-
-**TODO:** Add any additional install steps to the list below.
-   For example installing any non-Python dependencies or adding any required
-   config settings.
 
 To install ckanext-big-resources:
 
@@ -47,15 +43,12 @@ To install ckanext-big-resources:
 
 ## Config settings
 
-None at present
-
-**TODO:** The chunk size for upload and download can be set up in production.ini as shown below
-
+The following settings (which set the upload and the download chunk in bytes) should be present in the ckan.ini file.
 
 	ckanext.big_resources.chunk_upload = number_in_bytes
-    ckanext.big_resources.chunk_upload = number_in_bytes
+    ckanext.big_resources.chunk_download = number_in_bytes
 
-The default value is 2048
+If thease settings are not found in the ckan.ini than the default value vill be set by the extension. The default value for both upload and download of the resource is 2048
 
 
 
@@ -76,6 +69,9 @@ To run the tests, do:
 
     pytest --ckan-ini=test.ini
 
+## Notice
+
+This extension can not be combined together with a cloud storage CKAN extension (like ckanext-cloudstorage or ckanext-s3filestore). If the CKAN is extended with a cloud storage extensions than the upload and download of the resources is taken over by the cloud storage extension and the  ckanext-big-resources becomes obsolete.
 
 ## Releasing a new version of ckanext-big-resources
 
