@@ -28,13 +28,13 @@ To install ckanext-big-resources:
 2. Clone the source and install it on the virtualenv
 
     `
-     git clone https://github.com/keitaroinc/ckanext-big-resources
-     cd ckanext-big-resources
-     pip install -e .
-     pip install -r requirements.txt
-     `
+    git clone https://github.com/keitaroinc/ckanext-big-resources.git
+    cd ckanext-big-resources
+    python setup.py develop
+    pip install -r dev-requirements.txt
+    `
     
-3. Add `big-resources` to the `ckan.plugins` setting in your CKAN
+3. Add `big_resources` to the `ckan.plugins` setting in your CKAN
    config file (by default the config file is located at
    `/etc/ckan/default/ckan.ini`).
 
@@ -59,7 +59,7 @@ If thease settings are not found in the ckan.ini than the default value vill be 
 To install ckanext-big-resources for development, activate your CKAN virtualenv and
 do:
 
-    git clone https://github.com/blagojabozinovski/ckanext-big-resources.git
+    git clone https://github.com/keitaroinc/ckanext-big-resources.git
     cd ckanext-big-resources
     python setup.py develop
     pip install -r dev-requirements.txt
