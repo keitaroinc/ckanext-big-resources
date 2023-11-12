@@ -49,7 +49,7 @@ The following settings (which set the upload and the download chunk in bytes) sh
 	ckanext.big_resources.chunk_upload = number_in_bytes
     ckanext.big_resources.chunk_download = number_in_bytes
 
-If thease settings are not found in the ckan.ini than the default value vill be set by the extension. The default value for both upload and download of the resource is 2048
+If thease settings are not found in the ckan.ini than the default value will be set by the extension. The default value for both upload and download of the resource is 2048
 
 
 
