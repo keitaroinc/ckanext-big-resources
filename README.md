@@ -1,7 +1,7 @@
 # ckanext-big-resources
 
 CKAN extension that overwrites the upload and download of the resources. 
-The extension breaks the resources into chunks and streams the response. This extension is usefull if We want to configure the chunk size of upload and download in order to use of the server resources in more efficient way.
+The extension breaks the resources into chunks and streams the response. This extension is usefull if We want to configure the chunk size of upload and download in order to use the server resources (RAM and CPU) in more efficient way.
 
 
 ## Requirements
@@ -27,10 +27,10 @@ To install ckanext-big-resources:
 
 2. Clone the source and install it on the virtualenv
 
-    git clone https://github.com/blagojabozinovski/ckanext-big-resources.git
-    cd ckanext-big-resources
-    pip install -e .
-	pip install -r requirements.txt
+     git clone https://github.com/keitaroinc/ckanext-big-resources
+     cd ckanext-big-resources
+     pip install -e .
+     pip install -r requirements.txt
 
 3. Add `big-resources` to the `ckan.plugins` setting in your CKAN
    config file (by default the config file is located at
