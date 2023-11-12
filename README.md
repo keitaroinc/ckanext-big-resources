@@ -29,8 +29,12 @@ To install ckanext-big-resources:
 
     `
     git clone https://github.com/keitaroinc/ckanext-big-resources.git
+
+    
     cd ckanext-big-resources
+    
     python setup.py develop
+    
     pip install -r dev-requirements.txt
     `
     
